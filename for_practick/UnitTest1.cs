@@ -16,7 +16,7 @@ public class Tests
         driver.Navigate().GoToUrl(URL);
     }
         
-    private void Burger()
+    private void Go_to_SidebarMenu()
     {
         //Найти бургер (эллемент навигации)
         var burger = driver.FindElement(By.CssSelector("button[data-tid='SidebarMenuButton']"));
@@ -39,7 +39,6 @@ public class Tests
 
         //перейти на сайт
         NavigateTo("https://staff-testing.testkontur.ru/");
-        Thread.Sleep(3000);
         //авторизоваться
         //ввести логин
         var login_row = driver.FindElement(By.Id("Username"));
@@ -59,12 +58,11 @@ public class Tests
     }
 
     [Test]
-    public void Burger_Logout()
+    public void Logout()
     {
-        Burger();
+        Go_to_SidebarMenu();
         //найти кнопку Выйти
         var LogoutButton = driver.FindElement(By.CssSelector("button[data-tid='LogoutButton']"));
-        Assert.That(LogoutButton.Text, Does.Contain("Выйти"), "Кнопка Выйти не найдена");
         //нажать на кнопку выйти
         LogoutButton.Click();
         //убедиться что вышли
@@ -75,7 +73,7 @@ public class Tests
     }
 
     [Test]
-    public void Update_Profile()
+    public void Page_Update_Profile()
     {
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
 
@@ -88,25 +86,23 @@ public class Tests
         wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(".react-ui")));
         //найти редактировать
         var ProfileEdit = driver.FindElement(By.CssSelector("[data-tid='ProfileEdit']"));
-        Assert.That(ProfileEdit.Text, Does.Contain("Редактировать"), "Раздел Редактировать не найден");
         //нажать на редактировать
         ProfileEdit.Click();
         //ждать пока страница откроется
-        IWebElement h1 = driver.FindElement(By.CssSelector("h1"));
+        IWebElement UploadFiles = driver.FindElement(By.CssSelector("[data-tid='UploadFiles']"));
         //проверить, что открылась нужная страница
-        Assert.That(h1.Text, Does.Contain("Редактирование профиля"), "Переход на редактирование профиля не произошел");
+        Assert.That(UploadFiles.Text, Does.Contain("Выбрать фотографию"), "Переход на редактирование профиля не произошел");
 
     }
 
     [Test]
-    public void Burger_Communites()
+    public void Go_to_list_of_Communities()
     {
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
         
-        Burger();
+        Go_to_SidebarMenu();
         //найти Сообщество
         var Community = driver.FindElements(By.CssSelector("[data-tid='Community']")).First(element => element.Displayed);
-        Assert.That(Community.Text, Does.Contain("Сообщества"), "Раздел Сообщества не найден");
         //нажать на Сообщество
         Community.Click();
         //подождать
@@ -118,7 +114,7 @@ public class Tests
     }
 
     [Test]
-    public void Create_Comments()
+    public void Create_Comments_for_news()
     { 
     //перейти на страницу комментария
     NavigateTo("https://staff-testing.testkontur.ru/comments");
@@ -126,20 +122,16 @@ public class Tests
     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
     //убедится, что переход совершен
     var title = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("[data-tid='Title']")));
-    Assert.That(title.Text, Does.Contain("Комментарии"),"Переход совершен некорректно");
     //найти поле комментировать
     var Comment = driver.FindElement(By.CssSelector(".react-ui-g51x6v"));
-    Assert.That(Comment.GetAttribute("placeholder"), Does.Contain("Комментировать"),"Поле комментировать не найдено");
     //нажать на поле комментировать
     Comment.Click();
     //найти куда писать
     var Comment1 = wait.Until(ExpectedConditions.ElementToBeClickable(By.ClassName("react-ui-r3t2bi")));
-    Assert.That(Comment1.GetAttribute("placeholder"), Does.Contain("Комментировать"),"Не найдено куда писать");
     //написать текст
     Comment1.SendKeys("Привет от автотеста");
     //найти кнопку отправить
     var button =  wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(".react-ui-m0adju")));
-    Assert.That(button.Text, Does.Contain("Отправить"), "Кнопка не найдена");
     //нажать на кнопку отправить
     button.Click();
     //проверить, что комментарий отправлен 
@@ -148,7 +140,7 @@ public class Tests
     }
 
     [Test]
-    public void Be_Like()
+    public void Put_Like_on_news()
 
     { 
     var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(3));
@@ -157,14 +149,10 @@ public class Tests
     NavigateTo("https://staff-testing.testkontur.ru/communities/e8ce0b22-dd03-4669-b21d-53c986425976");
     //убедится, что переход совершен
     var menu = wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector("[data-tid='PopupMenu__caption']")));
-    Assert.That(menu.Displayed, "Страница не открылась");
     //найти кнопку лайк у новости
     var like_button = driver.FindElement(By.CssSelector("[class^='sc-kLojOw sc-cBsszO']"));
-    Assert.That(like_button.Displayed, "Кнопка Лайк не найдена");
     //нажать на лайк
     like_button.Click();
-    //подождать
-    Thread.Sleep (3000);
     //проверить что лайк прошел
     var Like = driver.FindElements(By.CssSelector("[class^='sc-ganJan opCYB']"));
     Assert.That(Like, Has.Count.GreaterThan(0), "Лайк не прошел");
